@@ -6,10 +6,7 @@ declare module "styled-components" {
     textColor: string;
     bgColor: string;
     accentColor: string;
-    cardBgColor: string;
-    priceTitleColor: string;
-    homeBtnColor: string;
-    upwardColor: string;
-    downwardColor: string;
+    boardColor: string;
+    cardColor: string;
   }
 }
