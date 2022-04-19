@@ -5,7 +5,6 @@ import DraggableCard from "./DraggableCard";
 
 const Wrapper = styled.div`
   width: 300px;
-  padding: 20px 10px;
   padding-top: 10px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
@@ -16,6 +15,7 @@ const Wrapper = styled.div`
 
 const Title = styled.h2`
   text-align: center;
+  padding: 10px 0;
   font-weight: 600;
   margin-bottom: 10px;
   font-size: 18px;
@@ -28,9 +28,10 @@ interface IAreaProps {
 }
 
 const Area = styled.div<IAreaProps>`
-  background-color: ${(props) => props.isDraggingOver? "pink" : props.isDraggingFromThis? "red" : "blue"};
+  background-color: ${(props) => props.isDraggingOver? "#b2cffa" : props.isDraggingFromThis? "#dadce0" : "transparent"};
   flex-grow: 1;
-  transition: background-color .3s ease-in-out;
+  transition: background-color .4s ease-in-out;
+  padding: 20px 10px;
 `;
 
 interface IBoardProps {
@@ -59,12 +60,16 @@ function Board({ toDos, boardId }: IBoardProps) {
 export default Board;
 
 /**
- * info(snapshot) : card 이동 감지
- * 
- * export interface DroppableStateSnapshot {
-    isDraggingOver: boolean;
-    draggingOverWith?: DraggableId | undefined;
-    draggingFromThisWith?: DraggableId | undefined;
-    isUsingPlaceholder: boolean;
+export interface DraggableStateSnapshot {
+    isDragging: boolean;
+    isDropAnimating: boolean;
+    dropAnimation?: DropAnimation | undefined;
+    draggingOver?: DroppableId | undefined;
+    // the id of a draggable that you are combining with
+    combineWith?: DraggableId | undefined;
+    // a combine target is being dragged over by
+    combineTargetFor?: DraggableId | undefined;
+    // What type of movement is being done: 'FLUID' or 'SNAP'
+    mode?: MovementMode | undefined;
 }
  */
