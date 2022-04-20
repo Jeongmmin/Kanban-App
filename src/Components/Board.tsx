@@ -1,7 +1,8 @@
-import React from "react";
+import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
+import { ITodo } from "../atom";
 
 const Wrapper = styled.div`
   width: 300px;
@@ -22,32 +23,68 @@ const Title = styled.h2`
 `;
 
 interface IAreaProps {
-  isDraggingFromThis:boolean;
-  isDraggingOver:boolean
-
+  isDraggingFromThis: boolean;
+  isDraggingOver: boolean;
 }
 
 const Area = styled.div<IAreaProps>`
-  background-color: ${(props) => props.isDraggingOver? "#b2cffa" : props.isDraggingFromThis? "#dadce0" : "transparent"};
+  background-color: ${(props) =>
+    props.isDraggingOver
+      ? "#b2cffa"
+      : props.isDraggingFromThis
+      ? "#dadce0"
+      : "transparent"};
   flex-grow: 1;
-  transition: background-color .4s ease-in-out;
+  transition: background-color 0.4s ease-in-out;
   padding: 20px 10px;
 `;
 
+const Form = styled.form`
+  width: 100%;
+  input {
+    width: 100%;
+  }
+`;
+
 interface IBoardProps {
-  toDos: string[];
+  toDos: ITodo[];
   boardId: string;
 }
 
+interface IForm {
+  toDo: string;
+}
+
 function Board({ toDos, boardId }: IBoardProps) {
+  const { register, setValue, handleSubmit } = useForm<IForm>();
+  const onValid = ({ toDo }: IForm) => {
+    setValue("toDo", "");
+  };
   return (
     <Wrapper>
       <Title>{boardId}</Title>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("toDo", { required: true })}
+          type="text"
+          placeholder={`${boardId}을 추가해 주세요`}
+        />
+      </Form>
       <Droppable droppableId={boardId}>
         {(magic, info) => (
-          <Area isDraggingOver={info.isDraggingOver} isDraggingFromThis={Boolean(info.draggingFromThisWith)} ref={magic.innerRef} {...magic.droppableProps}>
+          <Area
+            isDraggingOver={info.isDraggingOver}
+            isDraggingFromThis={Boolean(info.draggingFromThisWith)}
+            ref={magic.innerRef}
+            {...magic.droppableProps}
+          >
             {toDos.map((toDo, index) => (
-              <DraggableCard key={toDo} index={index} toDo={toDo} />
+              <DraggableCard
+                key={toDo.id}
+                index={index}
+                toDoId={toDo.id}
+                toDotext={toDo.text}
+              />
             ))}
             {magic.placeholder}
           </Area>
@@ -60,16 +97,10 @@ function Board({ toDos, boardId }: IBoardProps) {
 export default Board;
 
 /**
-export interface DraggableStateSnapshot {
-    isDragging: boolean;
-    isDropAnimating: boolean;
-    dropAnimation?: DropAnimation | undefined;
-    draggingOver?: DroppableId | undefined;
-    // the id of a draggable that you are combining with
-    combineWith?: DraggableId | undefined;
-    // a combine target is being dragged over by
-    combineTargetFor?: DraggableId | undefined;
-    // What type of movement is being done: 'FLUID' or 'SNAP'
-    mode?: MovementMode | undefined;
-}
+ref : react 코드를 이용해 HTML 요소를 지정하고, 가져올 수 있는 방법 / reactJS Component를 통해서 HTML 요소를 가져올 수 있도록 한다.
+
+JS의 document.getElementBy 랑 같은 것
+blur() focus :  사라지는 것
+
+https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement#methods
  */
