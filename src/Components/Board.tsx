@@ -2,7 +2,8 @@ import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
-import { ITodo } from "../atom";
+import { ITodo, toDoState } from "../atom";
+import { useSetRecoilState } from 'recoil';
 
 const Wrapper = styled.div`
   width: 300px;
@@ -56,8 +57,21 @@ interface IForm {
 }
 
 function Board({ toDos, boardId }: IBoardProps) {
+  const setToDos = useSetRecoilState(toDoState)
   const { register, setValue, handleSubmit } = useForm<IForm>();
   const onValid = ({ toDo }: IForm) => {
+    const newToDo = {
+      id:Date.now(),
+      text: toDo
+    };
+    setToDos(allBoards => {
+      return {
+        ...allBoards,
+        [boardId]: [
+          ...allBoards[boardId], newToDo
+        ]
+      }
+    })
     setValue("toDo", "");
   };
   return (
@@ -96,11 +110,3 @@ function Board({ toDos, boardId }: IBoardProps) {
 
 export default Board;
 
-/**
-ref : react 코드를 이용해 HTML 요소를 지정하고, 가져올 수 있는 방법 / reactJS Component를 통해서 HTML 요소를 가져올 수 있도록 한다.
-
-JS의 document.getElementBy 랑 같은 것
-blur() focus :  사라지는 것
-
-https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement#methods
- */

@@ -17,3 +17,5 @@ export const toDoState = atom<IToDoState>({
     Done: [],
   },
 });
+
+// atom을 위한 Setter 함수
